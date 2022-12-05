@@ -40,7 +40,7 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
                 Stroke stroke = new BasicStroke(6f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(stroke);
-                g.setColor(Color.MAGENTA);
+                g.setColor(Color.WHITE);
                 int i = (int)Math.round(win.getWidth()/2.42);
                 int j = (int)Math.round(win.getHeight()/14.4);
                 g.drawLine(i, j, i, (int)Math.round(j*11.6));
@@ -49,6 +49,8 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
                 g.drawLine((int)Math.round(i*0.615), (int)Math.round(j*8.16), (int)Math.round(i*1.753), (int)Math.round(j*8.16));
             }
         };
+
+        resetall();
 
         //Panel Background and Layout
         pn[0].setBackground(Color.WHITE);
@@ -96,28 +98,29 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
         win.pack();
         win.setVisible(true);
 
-        for (int a = 0; a < 9; a++) {
-            arr[a] = (char)a;
-        }
-
         for (;;) {
-            player[turn%2].setText("Player " + (turn%2 == 0 ? 1 : 2) + " turn!");
-            player[turn%2].setForeground(Color.RED);
-            player[(turn%2 == 0 ? 1 : 0)].setText("Player " + (turn%2 == 0 ? 2 : 1));
-            player[(turn%2 == 0 ? 1 : 0)].setForeground(Color.BLACK);
+            for (;;) {
+                player[turn%2].setText("Player " + (turn%2 == 0 ? 1 : 2) + " turn!");
+                player[turn%2].setForeground(Color.RED);
+                player[(turn%2 == 0 ? 1 : 0)].setText("Player " + (turn%2 == 0 ? 2 : 1));
+                player[(turn%2 == 0 ? 1 : 0)].setForeground(Color.BLACK);
 
-            int win = check_win(arr);
-            if (win == 1) {
+                int win = check_win(arr);
+                if (win == 1) {
                 System.out.println("Player 1 win");
-                break;
-            }
-            else if (win == 2) {
-                System.out.println("Player 2 win");
-                break;
-            }
-            else if (win == 0 && take.size() == 9) {
-                System.out.println("Draw");
-                break;
+                    resetall();
+                    break;
+                }
+                else if (win == 2) {
+                    System.out.println("Player 2 win");
+                    resetall();
+                    break;
+                }
+                else if (win == 0 && take.size() == 9) {
+                    System.out.println("Draw");
+                    resetall();
+                    break;
+                }
             }
         }
     }
@@ -191,6 +194,14 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
         else if (arr[2] == arr[4] && arr[2] == arr[6])
             return arr[2] == 'x' ? 1 : 2;
         return 0;
+    }
+    public void resetall() {
+        take.clear();
+        for (int i = 0; i < 9; i++) {
+            arr[i] = (char)i;
+            if (space[1] != null)
+                space[i].setVisible(false);
+        }
     }
 
     public void mouseClicked(MouseEvent e) {}
