@@ -12,11 +12,12 @@ import java.awt.Image;
 import java.util.*;
 import javax.swing.*;
 
-public class frame extends JFrame implements MouseMotionListener, MouseListener{
+public class frame extends JFrame implements MouseMotionListener, MouseListener {
 
     List<Integer> x = new ArrayList<Integer>();
     List<Integer> y = new ArrayList<Integer>();
     List<Integer> take = new ArrayList<Integer>();
+    char[] arr = new char[9];
     ImageIcon cross = new ImageIcon(new ImageIcon(".\\img\\cross.png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
     ImageIcon round = new ImageIcon(new ImageIcon(".\\img\\round.png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
     JFrame win = new JFrame("TicTacToe Game");
@@ -95,6 +96,30 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener{
         win.pack();
         win.setVisible(true);
 
+        for (int a = 0; a < 9; a++) {
+            arr[a] = (char)a;
+        }
+
+        for (;;) {
+            player[turn%2].setText("Player " + (turn%2 == 0 ? 1 : 2) + " turn!");
+            player[turn%2].setForeground(Color.RED);
+            player[(turn%2 == 0 ? 1 : 0)].setText("Player " + (turn%2 == 0 ? 2 : 1));
+            player[(turn%2 == 0 ? 1 : 0)].setForeground(Color.BLACK);
+
+            int win = check_win(arr);
+            if (win == 1) {
+                System.out.println("Player 1 win");
+                break;
+            }
+            else if (win == 2) {
+                System.out.println("Player 2 win");
+                break;
+            }
+            else if (win == 0 && take.size() == 9) {
+                System.out.println("Draw");
+                break;
+            }
+        }
     }
 
     @Override
@@ -117,18 +142,18 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener{
         int closest = getclosest(e, x, y);
         if (turn == 0 && !take.contains(closest)) {
             space[closest].setIcon(cross);
-            space[closest].setVisible(true);
-            take.add(closest);
+            arr[closest] = 'x';
             turn++;
         }
         else if (turn == 1 && !take.contains(closest)) {
             space[closest].setIcon(round);
-            space[closest].setVisible(true);
-            take.add(closest);
+            arr[closest] = 'o';
             turn--;
         }
+        space[closest].setVisible(true);
+        take.add(closest);
     }
-    
+
     public int DistSquared(MouseEvent e, int x, int y) {
         int diffX = e.getX() - x;
         int diffY = e.getY() - y;
@@ -148,10 +173,29 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener{
         return closest;
     }
 
+    public int check_win(char[] arr) {
+        if (arr[0] == arr[1] && arr[0] == arr[2])
+            return arr[0] == 'x' ? 1 : 2;
+        else if (arr[3] == arr[4] && arr[3] == arr[5])
+            return arr[3] == 'x' ? 1 : 2;
+        else if (arr[6] == arr[7] && arr[6] == arr[8])
+            return arr[6] == 'x' ? 1 : 2;
+        else if (arr[0] == arr[3] && arr[0] == arr[6])
+            return arr[0] == 'x' ? 1 : 2;
+        else if (arr[1] == arr[4] && arr[1] == arr[7])
+            return arr[1] == 'x' ? 1 : 2;
+        else if (arr[2] == arr[5] && arr[2] == arr[8])
+            return arr[2] == 'x' ? 1 : 2;
+        else if (arr[0] == arr[4] && arr[0] == arr[8])
+            return arr[0] == 'x' ? 1 : 2;
+        else if (arr[2] == arr[4] && arr[2] == arr[6])
+            return arr[2] == 'x' ? 1 : 2;
+        return 0;
+    }
+
     public void mouseClicked(MouseEvent e) {}
     public void mouseDragged(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
 }
-
