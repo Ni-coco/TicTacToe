@@ -99,28 +99,23 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
         win.setVisible(true);
 
         for (;;) {
-            for (;;) {
-                player[turn%2].setText("Player " + (turn%2 == 0 ? 1 : 2) + " turn!");
-                player[turn%2].setForeground(Color.RED);
-                player[(turn%2 == 0 ? 1 : 0)].setText("Player " + (turn%2 == 0 ? 2 : 1));
-                player[(turn%2 == 0 ? 1 : 0)].setForeground(Color.BLACK);
+            player[turn%2].setText("Player " + (turn%2 == 0 ? 1 : 2) + " turn!");
+            player[turn%2].setForeground(Color.RED);
+            player[(turn%2 == 0 ? 1 : 0)].setText("Player " + (turn%2 == 0 ? 2 : 1));
+            player[(turn%2 == 0 ? 1 : 0)].setForeground(Color.BLACK);
 
-                int win = check_win(arr);
-                if (win == 1) {
+            int win = check_win(arr);
+            if (win == 1) {
                 System.out.println("Player 1 win");
-                    resetall();
-                    break;
-                }
-                else if (win == 2) {
-                    System.out.println("Player 2 win");
-                    resetall();
-                    break;
-                }
-                else if (win == 0 && take.size() == 9) {
-                    System.out.println("Draw");
-                    resetall();
-                    break;
-                }
+                resetall();
+            }
+            else if (win == 2) {
+                System.out.println("Player 2 win");
+                resetall();
+            }
+            else if (win == 0 && take.size() == 9) {
+                System.out.println("Draw");
+                resetall();
             }
         }
     }
@@ -199,7 +194,7 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
         take.clear();
         for (int i = 0; i < 9; i++) {
             arr[i] = (char)i;
-            if (space[1] != null)
+            if (space[i] != null)
                 space[i].setVisible(false);
         }
     }
