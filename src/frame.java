@@ -8,11 +8,12 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.Font;
 
 import java.util.*;
 import javax.swing.*;
 
-public class frame extends JFrame implements MouseMotionListener, MouseListener {
+public class frame extends JFrame implements MouseMotionListener, MouseListener, ActionListener {
 
     List<Integer> x = new ArrayList<Integer>();
     List<Integer> y = new ArrayList<Integer>();
@@ -24,13 +25,36 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
     JPanel[] pn = new JPanel[2];
     JLabel[] player = new JLabel[2];
     JLabel[] space = new JLabel[9];
+    JButton[] btn = new JButton[2];
+    JLabel w = new JLabel();
     int turn = 0;
     
     public frame() {
+
+        btn[0] = new JButton("Remake!");
+        btn[1] = new JButton("Exit");
+        btn[0].addActionListener(this);
+        btn[1].addActionListener(this);
+
+        setframe();
+
+        for (;;) {
+            setTurn();
+            int winning = check_win(arr);
+            if (winning != 0 || take.size() == 9)
+                setWinner(winning);
+        }
+    }
+
+    public void setframe() {
+
         win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         win.setPreferredSize(new Dimension(1080, 720));
+        win.setBackground(Color.black);
         win.setLayout(new BorderLayout());
         win.setResizable(false);
+        win.add(w, BorderLayout.CENTER);
+        win.setVisible(true);
 
         pn[0] = new JPanel();
         pn[1] = new JPanel() {
@@ -56,7 +80,6 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
         pn[0].setBackground(Color.WHITE);
         pn[0].setLayout(new FlowLayout(1, 200, 10));
         pn[1].setBackground(Color.BLACK);
-        //pn[1].setLayout(new GridBagLayout());
         pn[1].setLayout(null);
 
 
@@ -94,81 +117,16 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
         win.addMouseMotionListener(this);
         win.addMouseListener(this);
 
-        //Frame visiblity and pack
+        //Frame visiblity
         win.pack();
         win.setVisible(true);
-
-        for (;;) {
-            player[turn%2].setText("Player " + (turn%2 == 0 ? 1 : 2) + " turn!");
-            player[turn%2].setForeground(Color.RED);
-            player[(turn%2 == 0 ? 1 : 0)].setText("Player " + (turn%2 == 0 ? 2 : 1));
-            player[(turn%2 == 0 ? 1 : 0)].setForeground(Color.BLACK);
-
-            int win = check_win(arr);
-            if (win == 1) {
-                System.out.println("Player 1 win");
-                resetall();
-            }
-            else if (win == 2) {
-                System.out.println("Player 2 win");
-                resetall();
-            }
-            else if (win == 0 && take.size() == 9) {
-                System.out.println("Draw");
-                resetall();
-            }
-        }
     }
 
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        int closest = getclosest(e, x, y);
-        if (turn == 0 && !take.contains(closest)) {
-            space[closest].setIcon(cross);
-            space[closest].setVisible(true);
-        }
-        else if (turn == 1 && !take.contains(closest)) {
-            space[closest].setIcon(round);
-            space[closest].setVisible(true);
-        }
-        for (int i = 0; i < space.length; i++)
-            if (i != closest && !take.contains(i))
-                space[i].setVisible(false);
-    }
-
-    public void mousePressed(MouseEvent e) {
-        int closest = getclosest(e, x, y);
-        if (turn == 0 && !take.contains(closest)) {
-            space[closest].setIcon(cross);
-            arr[closest] = 'x';
-            turn++;
-        }
-        else if (turn == 1 && !take.contains(closest)) {
-            space[closest].setIcon(round);
-            arr[closest] = 'o';
-            turn--;
-        }
-        space[closest].setVisible(true);
-        take.add(closest);
-    }
-
-    public int DistSquared(MouseEvent e, int x, int y) {
-        int diffX = e.getX() - x;
-        int diffY = e.getY() - y;
-        return (diffX*diffX+diffY*diffY);
-    }
-
-    public int getclosest(MouseEvent e, List<Integer> x, List<Integer> y) {
-        int closest = 0;
-        int ShortestDistance = DistSquared(e, x.get(0), y.get(0));
-        for (int i = 0; i < space.length; i++) {
-            int d = DistSquared(e, x.get(i), y.get(i));
-            if (d < ShortestDistance) {
-                closest = i;
-                ShortestDistance = d;
-            }
-        }
-        return closest;
+    public void setTurn() {
+        player[turn%2].setText("Player " + (turn%2 == 0 ? 1 : 2) + " turn!");
+        player[turn%2].setForeground(Color.RED);
+        player[(turn%2 == 0 ? 1 : 0)].setText("Player " + (turn%2 == 0 ? 2 : 1));
+        player[(turn%2 == 0 ? 1 : 0)].setForeground(Color.BLACK);
     }
 
     public int check_win(char[] arr) {
@@ -190,6 +148,24 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
             return arr[2] == 'x' ? 1 : 2;
         return 0;
     }
+
+    public void setWinner(int winner) {
+        pn[0].setVisible(false);
+        pn[1].setVisible(false);
+        if (winner != 0)
+            w.setText("Player " + winner + " win!");
+        else if (take.size() == 9)
+            w.setText("Draw!");
+        w.setHorizontalAlignment(JLabel.CENTER);
+        w.setFont(new Font("Arial", Font.BOLD, 25));
+        win.setLayout(new FlowLayout());
+        win.add(w);
+        win.add(btn[0]);
+        win.add(btn[1]);
+        System.out.println("Player " + winner + " win!");
+        resetall();
+    }
+
     public void resetall() {
         take.clear();
         for (int i = 0; i < 9; i++) {
@@ -197,6 +173,69 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener 
             if (space[i] != null)
                 space[i].setVisible(false);
         }
+    }
+
+    public int DistSquared(MouseEvent e, int x, int y) {
+        int diffX = e.getX() - x;
+        int diffY = e.getY() - y;
+        return (diffX*diffX+diffY*diffY);
+    }
+
+    public int getclosest(MouseEvent e, List<Integer> x, List<Integer> y) {
+        int closest = 0;
+        int ShortestDistance = DistSquared(e, x.get(0), y.get(0));
+        for (int i = 0; i < space.length; i++) {
+            int d = DistSquared(e, x.get(i), y.get(i));
+            if (d < ShortestDistance) {
+                closest = i;
+                ShortestDistance = d;
+            }
+        }
+        return closest;
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        int closest = getclosest(e, x, y);
+        if (turn == 0 && !take.contains(closest)) {
+            space[closest].setIcon(cross);
+            space[closest].setVisible(true);
+        }
+        else if (turn == 1 && !take.contains(closest)) {
+            space[closest].setIcon(round);
+            space[closest].setVisible(true);
+        }
+        for (int i = 0; i < space.length; i++)
+            if (i != closest && !take.contains(i))
+                space[i].setVisible(false);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        int closest = getclosest(e, x, y);
+        if (turn == 0 && !take.contains(closest)) {
+            space[closest].setIcon(cross);
+            arr[closest] = 'x';
+            turn++;
+        }
+        else if (turn == 1 && !take.contains(closest)) {
+            space[closest].setIcon(round);
+            arr[closest] = 'o';
+            turn--;
+        }
+        space[closest].setVisible(true);
+        take.add(closest);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btn[0]) {
+            pn[0].setVisible(true);
+            pn[1].setVisible(true);
+            setframe();
+        }
+        if (e.getSource() == btn[1])
+            System.exit(0);
     }
 
     public void mouseClicked(MouseEvent e) {}
