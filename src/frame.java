@@ -31,29 +31,11 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
     
     public frame() {
 
-        btn[0] = new JButton("Remake!");
-        btn[1] = new JButton("Exit");
-        btn[0].addActionListener(this);
-        btn[1].addActionListener(this);
-
-        setframe();
-
-        for (;;) {
-            setTurn();
-            int winning = check_win(arr);
-            if (winning != 0 || take.size() == 9)
-                setWinner(winning);
-        }
-    }
-
-    public void setframe() {
-
         win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         win.setPreferredSize(new Dimension(1080, 720));
         win.setBackground(Color.black);
         win.setLayout(new BorderLayout());
         win.setResizable(false);
-        win.add(w, BorderLayout.CENTER);
         win.setVisible(true);
 
         pn[0] = new JPanel();
@@ -74,15 +56,12 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
             }
         };
 
-        resetall();
-
         //Panel Background and Layout
         pn[0].setBackground(Color.WHITE);
         pn[0].setLayout(new FlowLayout(1, 200, 10));
         pn[1].setBackground(Color.BLACK);
         pn[1].setLayout(null);
-
-
+        
         //Panel[0]
         player[0] = new JLabel("Player 1");
         player[1] = new JLabel("Player 2");
@@ -107,6 +86,12 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
             i += 185;
         }
 
+        //btn
+        btn[0] = new JButton("Remake!");
+        btn[1] = new JButton("Exit");
+        btn[0].addActionListener(this);
+        btn[1].addActionListener(this);
+
         //Adding Panels
         win.add(pn[0], BorderLayout.NORTH);
         win.add(pn[1], BorderLayout.CENTER);
@@ -120,6 +105,15 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
         //Frame visiblity
         win.pack();
         win.setVisible(true);
+
+        resetall();
+
+        for (;;) {
+            setTurn();
+            int winning = check_win(arr);
+            if (winning != 0 || take.size() == 9)
+                setWinner(winning);
+        }
     }
 
     public void setTurn() {
@@ -232,7 +226,11 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
         if (e.getSource() == btn[0]) {
             pn[0].setVisible(true);
             pn[1].setVisible(true);
-            setframe();
+            win.setLayout(new BorderLayout());
+            win.remove(w);
+            win.remove(btn[0]);
+            win.remove(btn[1]);
+            resetall();
         }
         if (e.getSource() == btn[1])
             System.exit(0);
