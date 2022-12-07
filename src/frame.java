@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.Font;
+import java.awt.GridLayout;
 
 import java.util.*;
 import javax.swing.*;
@@ -22,7 +23,7 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
     ImageIcon cross = new ImageIcon(new ImageIcon(".\\img\\cross.png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
     ImageIcon round = new ImageIcon(new ImageIcon(".\\img\\round.png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
     JFrame win = new JFrame("TicTacToe Game");
-    JPanel[] pn = new JPanel[2];
+    JPanel[] pn = new JPanel[3];
     JLabel[] player = new JLabel[2];
     JLabel[] space = new JLabel[9];
     JButton[] btn = new JButton[2];
@@ -33,7 +34,6 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
 
         win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         win.setPreferredSize(new Dimension(1080, 720));
-        win.setBackground(Color.black);
         win.setLayout(new BorderLayout());
         win.setResizable(false);
         win.setVisible(true);
@@ -86,11 +86,23 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
             i += 185;
         }
 
-        //btn
+        /* Panel[2] for winner */
+        pn[2] = new JPanel();
+        pn[2].setLayout(new GridLayout(3, 1));
+        pn[2].setBackground(Color.BLACK);
+
+        //Label for winner
+        w.setForeground(Color.WHITE);
+        w.setFont(new Font("Arial", Font.BOLD, 25));
+        pn[2].add(w);
+
+        //btn[]
         btn[0] = new JButton("Remake!");
         btn[1] = new JButton("Exit");
         btn[0].addActionListener(this);
         btn[1].addActionListener(this);
+        pn[2].add(btn[0]);
+        pn[2].add(btn[1]);
 
         //Adding Panels
         win.add(pn[0], BorderLayout.NORTH);
@@ -144,20 +156,14 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
     }
 
     public void setWinner(int winner) {
+        resetall();
         pn[0].setVisible(false);
         pn[1].setVisible(false);
+        win.add(pn[2], BorderLayout.CENTER);
         if (winner != 0)
             w.setText("Player " + winner + " win!");
         else if (take.size() == 9)
             w.setText("Draw!");
-        w.setHorizontalAlignment(JLabel.CENTER);
-        w.setFont(new Font("Arial", Font.BOLD, 25));
-        win.setLayout(new FlowLayout());
-        win.add(w);
-        win.add(btn[0]);
-        win.add(btn[1]);
-        System.out.println("Player " + winner + " win!");
-        resetall();
     }
 
     public void resetall() {
@@ -224,13 +230,9 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btn[0]) {
+            win.getContentPane().remove(pn[2]);
             pn[0].setVisible(true);
             pn[1].setVisible(true);
-            win.setLayout(new BorderLayout());
-            win.remove(w);
-            win.remove(btn[0]);
-            win.remove(btn[1]);
-            resetall();
         }
         if (e.getSource() == btn[1])
             System.exit(0);
