@@ -21,8 +21,8 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
     List<Integer> y = new ArrayList<Integer>();
     List<Integer> take = new ArrayList<Integer>();
     char[] arr = new char[9];
-    ImageIcon cross = new ImageIcon(new ImageIcon(".\\img\\cross.png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
-    ImageIcon round = new ImageIcon(new ImageIcon(".\\img\\round.png").getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
+    ImageIcon cross = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("cross.png")).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
+    ImageIcon round = new ImageIcon(new ImageIcon(getClass().getClassLoader().getResource("round.png")).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT));
     JFrame win = new JFrame("TicTacToe Game");
     JPanel[] pn = new JPanel[3];
     JLabel[] player = new JLabel[2];
