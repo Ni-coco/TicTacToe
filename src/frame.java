@@ -1,18 +1,19 @@
-import java.awt.event.*;
-import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.BorderLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics2D;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.*;
+import java.awt.Insets;
+import java.awt.Stroke;
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.Font;
-import java.awt.GridLayout;
-
-import java.util.*;
 import javax.swing.*;
+import java.util.*;
 
 public class frame extends JFrame implements MouseMotionListener, MouseListener, ActionListener {
 
@@ -88,21 +89,34 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
 
         /* Panel[2] for winner */
         pn[2] = new JPanel();
-        pn[2].setLayout(new GridLayout(3, 1));
+        pn[2].setLayout(new GridBagLayout());
         pn[2].setBackground(Color.BLACK);
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 0;
 
         //Label for winner
         w.setForeground(Color.WHITE);
-        w.setFont(new Font("Arial", Font.BOLD, 25));
-        pn[2].add(w);
+        w.setFont(new Font("Arial", Font.BOLD, 55));
+        //Constraints
+        c.insets = new Insets(10, 10, 40, 10);
+        c.gridy = 0;
+        pn[2].add(w, c);
 
         //btn[]
         btn[0] = new JButton("Remake!");
         btn[1] = new JButton("Exit");
         btn[0].addActionListener(this);
         btn[1].addActionListener(this);
-        pn[2].add(btn[0]);
-        pn[2].add(btn[1]);
+        btn[0].setFont(new Font("Arial", Font.BOLD, 20));
+        btn[1].setFont(new Font("Arial", Font.BOLD, 20));
+
+        c.insets = new Insets(10, 10, 20, 10);
+        c.ipadx = 40;
+        c.ipady = 20;
+        c.gridy = 1;
+        pn[2].add(btn[0], c);
+        c.gridy = 2;
+        pn[2].add(btn[1], c);
 
         //Adding Panels
         win.add(pn[0], BorderLayout.NORTH);
@@ -160,9 +174,10 @@ public class frame extends JFrame implements MouseMotionListener, MouseListener,
         pn[0].setVisible(false);
         pn[1].setVisible(false);
         win.add(pn[2], BorderLayout.CENTER);
+        System.out.println(take.size());
         if (winner != 0)
             w.setText("Player " + winner + " win!");
-        else if (take.size() == 9)
+        else
             w.setText("Draw!");
     }
 
